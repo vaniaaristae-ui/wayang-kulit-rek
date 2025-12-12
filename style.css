@@ -1,0 +1,131 @@
+/* style.css untuk aplikasi quiz interaktif pengetahuan wayang kulit */
+
+/* Reset dasar untuk konsistensi */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body dengan tema wayang kulit: background gelap seperti kulit wayang, font tradisional */
+body {
+    font-family: 'Times New Roman', serif; /* Font serif untuk kesan klasik, mirip aksara Jawa */
+    background: linear-gradient(to bottom, #000000, #2a2a2a); /* Gradien hitam gelap */
+    color: #FFD700; /* Teks emas untuk kontras */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Container utama quiz */
+.quiz-container {
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparan hitam */
+    border: 3px solid #FFD700; /* Border emas */
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); /* Glow emas */
+    text-align: center;
+}
+
+/* Judul quiz */
+.quiz-title {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px #000; /* Bayangan untuk efek 3D */
+}
+
+/* Pertanyaan */
+.question {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+/* Opsi jawaban sebagai tombol */
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.option {
+    background: #333; /* Abu-abu gelap */
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.option:hover {
+    background: #FFD700; /* Hover emas */
+    color: #000;
+    transform: scale(1.05); /* Efek zoom */
+}
+
+.option.selected {
+    background: #FFD700;
+    color: #000;
+}
+
+/* Tombol navigasi (Next, Submit, dll.) */
+.btn {
+    background: #FFD700;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px;
+}
+
+.btn:hover {
+    background: #FFA500; /* Oranye untuk hover */
+    transform: scale(1.1);
+}
+
+/* Skor atau hasil akhir */
+.score {
+    font-size: 1.8em;
+    margin-top: 20px;
+    text-shadow: 2px 2px 4px #000;
+}
+
+/* Responsivitas untuk perangkat kecil */
+@media (max-width: 768px) {
+    .quiz-container {
+        padding: 20px;
+        max-width: 90%;
+    }
+    .quiz-title {
+        font-size: 2em;
+    }
+    .question {
+        font-size: 1.3em;
+    }
+    .option {
+        font-size: 1em;
+        padding: 12px;
+    }
+}
+
+/* Animasi shake untuk jawaban salah */
+.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}

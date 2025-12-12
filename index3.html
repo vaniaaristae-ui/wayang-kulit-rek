@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <!-- Autoplaying, looping, muted background music -->
+<audio autoplay muted loop>
+  <source src="audio/aud.mp3" type="audio/mpeg">
+  Your browser doesn't support this audio.
+</audio>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Wayang Kulit Nusantara</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+                /* Font and page background */
+                body {
+                        font-family: 'Comic Sans MS', cursive, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-color: #8B4513; /* Fallback warna jika gambar tidak ditemukan */
+            background-image: linear-gradient(135deg, rgba(139,69,19,0.6), rgba(255,215,0,0.2), rgba(220,20,60,0.2)), url('WAYANG.jpg'); /* Gunakan WAYANG.jpg lokal sebagai background dengan overlay gradien */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #FFF;
+            overflow-x: hidden;
+        }
+        #quiz-container {
+            max-width: 700px;
+            margin: auto;
+            background: rgba(0, 0, 0, 0.8); /* Semi-transparan hitam seperti wayang */
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); /* Bayangan emas */
+            border: 5px solid #FFD700; /* Border emas */
+            position: relative;
+        }
+        h1, h2, h3 {
+            color: #FFD700; /* Emas */
+            text-shadow: 2bopx 2px 4px #000;
+        }
+        .hidden { display: none; }
+        button {
+            padding: 12px 25px;
+            margin: 10px;
+            background: linear-gradient(45deg, #DC143C, #FF6347); /* Merah gradien */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px #FFD700;
+        }
+        .option {
+            display: block;
+            width: 100%;
+            margin: 8px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            color: #FFF;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .option:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
+        #timer {
+            font-size: 24px;
+            color: #FF4500;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        #feedback {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #FFD700;
+        }
+        #explanation {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            color: #FFF;
+        }
+        #image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .correct { background: #32CD32 !important; } /* Hijau untuk benar */
+        .incorrect { background: #FF6347 !important; } /* Merah untuk salah */
+        .confetti { /* Animasi confetti sederhana */
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #FFD700;
+            animation: fall 3s linear infinite;
+        }
+        .firework {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: explode 2s ease-out forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh); }
+        }
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(4); opacity: 0.7; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        @keyframes flash {
+            0% { filter: brightness(2); }
+            50% { filter: brightness(1.5); }
+            100% { filter: brightness(1); }
+        }
+        .flash {
+            animation: flash 1s ease-in-out;
+        }
+        .cross {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 120px;
+            color: #FF0000;
+            font-weight: bold;
+            animation: cross-appear 1.5s ease-out forwards;
+            z-index: 10;
+        }
+        .wayang-fight {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            animation: fight 2s ease-in-out forwards;
+            z-index: 5;
+        }
+        .wayang-fight.left {
+            left: -60px;
+            top: 40%;
+        }
+        .wayang-fight.right {
+            right: -60px;
+            top: 40%;
+        }
+        @keyframes cross-appear {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2) rotate(180deg); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1) rotate(360deg); }
+        }
+        @keyframes fight {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(100px) rotate(5deg); }
+            50% { transform: translateX(200px) rotate(-5deg); }
+            75% { transform: translateX(300px) rotate(5deg); }
+            100% { transform: translateX(400px) scale(0); opacity: 0; }
+        }
+        @keyframes wayang-bg-move {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.02) rotate(0.5deg); }
+            50% { transform: scale(1.05) rotate(0deg); }
+            75% { transform: scale(1.02) rotate(-0.5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .background-wayang {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('WAYANG.jpg') no-repeat center center;
+            background-size: cover;
+            animation: wayang-bg-move 15s ease-in-out infinite;
+            z-index: -1;
+        }
+        #rating {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #rating button {
+            font-size: 30px;
+            margin: 0 10px;
+            padding: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+        /* Responsivitas */
+        @media (max-width: 768px) {
+            #quiz-container { padding: 20px; }
+            .option { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <audio id="bg-music" loop>
+        <source src="https://example.com/gamelan-music.mp3" type="audio/mpeg"> <!-- Placeholder musik gamelan, ganti dengan URL musik tradisional Jawa -->
+        Browser Anda tidak mendukung audio.
+    </audio>
+
+    <div class="background-wayang">
+        <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover;">
+            <source src="Amral & Bolosrewu Animasi Wayang 480p.mp4" type="video/mp4">
+            Browser Anda tidak mendukung video.
+        </video>
+    </div>
+
+    <!-- Background statis: gunakan file WAYANG.jpg di folder proyek -->
+    <div id="quiz-container">
+        <h1>Quiz Wayang Kulit Nusantara</h1>
+        
+        <!-- Layar Utama -->
+        <div id="start-screen">
+            <p>Selamat datang di quiz wayang kulit, tolong kerjakan dengan benar !!!</p>
+            <button onclick="mulaiQuiz()">Mulai Quiz</button>
+        </div>
+        
+        <!-- Layar Quiz -->
+        <div id="quiz-screen" class="hidden">
+            <div id="timer">Waktu: 10</div>
+            <div id="question"></div>
+            <div id="options"></div>
+            <div id="feedback"></div>
+            <div id="explanation" class="hidden"></div>
+            <img id="image" class="wayang" alt="Gambar terkait">
+            <button id="retry-btn" class="hidden" onclick="cobaLagi()">Coba Lagi</button>
+        </div>
+        
+        <!-- Layar Hasil -->
+        <div id="result-screen" class="hidden">
+            <h2>Quiz Selesai!</h2>
+            <p id="score"></p>
+            <p id="message"></p>
+            <div id="rating">
+                <p>Bagaimana rating quiz ini?</p>
+                <button onclick="rate(1)">😊</button>
+                <button onclick="rate(2)">😐</button>
+                <button onclick="rate(3)">😢</button>
+            </div>
+            <button onclick="mulaiQuiz()">Ulangi Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Static background only: upload/Dalang Mode removed per user request
+        // Data quiz dengan penjelasan dan gambar
+        const dataQuiz = [
+            {
+                pertanyaan: "Siapa tokoh utama dalam Ramayana versi wayang kulit?",
+                opsi: ["A. Rama", "B. Hanuman", "C. Ravana", "D. Sita"],
+                jawabanBenar: "A",
+                penjelasan: "Rama adalah tokoh utama dalam epos Ramayana, yang sering dipentaskan dalam wayang kulit sebagai simbol kebaikan dan keadilan.",
+                gambar: "Rama-Solo.jpg" // Gambar Rama-Solo
+            },
+            {
+                pertanyaan: "Apa bahan utama untuk membuat wayang kulit?",
+                opsi: ["A. Kayu", "B. Kulit sapi", "C. Plastik", "D. Kertas"],
+                jawabanBenar: "B",
+                penjelasan: "Wayang kulit dibuat dari kulit sapi yang diukir halus, memberikan tekstur dan fleksibilitas untuk pertunjukan bayangan.",
+                gambar: "20042016-perajin-wayang-kulit-cirebon-teguh-prabowo.webp" // Gambar perajin wayang kulit
+            },
+            {
+                pertanyaan: "Siapa dalang terkenal dari wayang kulit Jawa?",
+                opsi: ["A. Ki Nartosabdo", "B. Ki Anom Suroto", "C. Ki Manteb Sudarsono", "D. Semua benar"],
+                jawabanBenar: "D",
+                penjelasan: "Ketiga dalang ini adalah maestro wayang kulit Jawa yang terkenal dengan kemampuan mereka dalam memainkan cerita epik.",
+                gambar: "20190902160936-20-0-.jpeg" // Gambar dalang
+            },
+            {
+                pertanyaan: "Apa fungsi utama wayang kulit dalam budaya Jawa?",
+                opsi: ["A. Hiburan saja", "B. Pendidikan dan hiburan", "C. Ritual keagamaan", "D. Semua benar"],
+                jawabanBenar: "D",
+                penjelasan: "Wayang kulit berfungsi sebagai hiburan, pendidikan moral, dan ritual keagamaan yang memperkuat nilai-nilai budaya Jawa.",
+                gambar: "pentas-wayang-di-isi-solo.webp" // Gambar pentas wayang
+            },
+            {
+                pertanyaan: "Berapa jumlah wanda (bagian tubuh) wayang kulit standar?",
+                opsi: ["A. 5", "B. 7", "C. 9", "D. 11"],
+                jawabanBenar: "C",
+                penjelasan: "Wayang kulit standar memiliki 9 wanda, termasuk kepala, badan, dan anggota gerak yang dapat dikontrol dalang.",
+                gambar: "225841_10150198423423736_171041283735_7091068_7385892_n.jpg" // Gambar wanda wayang
+            }
+        ];
+
+        let skor = 0;
+        let pertanyaanSaatIni = 0;
+        const totalPertanyaan = dataQuiz.length;
+        let timerInterval;
+        let totalTime = 30; // Waktu total 30 detik untuk semua soal
+        let currentTime = 30;
+        let jawabanDipilih = false;
+
+        // Fungsi mulai quiz
+        function mulaiQuiz() {
+            skor = 0;
+            pertanyaanSaatIni = 0;
+            currentTime = totalTime;
+            document.getElementById('bg-music').play(); // Mainkan musik
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            startTotalTimer();
+            tampilkanPertanyaan();
+        }
+
+        // Fungsi timer total
+        function startTotalTimer() {
+            document.getElementById('timer').textContent = `Waktu: ${currentTime}`;
+            timerInterval = setInterval(() => {
+                currentTime--;
+                document.getElementById('timer').textContent = `Waktu: ${currentTime}`;
+                if (currentTime <= 0) {
+                    clearInterval(timerInterval);
+                    tampilkanHasil(); // Waktu habis, tampilkan hasil
+                }
+            }, 1000);
+        }
+
+        // Fungsi tampilkan pertanyaan
+        function tampilkanPertanyaan() {
+            if (pertanyaanSaatIni < totalPertanyaan) {
+                jawabanDipilih = false;
+                const pertanyaan = dataQuiz[pertanyaanSaatIni];
+                document.getElementById('question').innerHTML = `<h3>${pertanyaan.pertanyaan}</h3>`;
+                const optionsDiv = document.getElementById('options');
+                optionsDiv.innerHTML = '';
+                pertanyaan.opsi.forEach((op, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option';
+                    btn.textContent = op;
+                    btn.onclick = () => periksaJawaban(op.charAt(0), btn);
+                    optionsDiv.appendChild(btn);
+                });
+                // Tampilkan gambar jika ada
+                if (pertanyaan.gambar) {
+                    document.getElementById('image').src = pertanyaan.gambar;
+                    document.getElementById('image').classList.remove('hidden');
+                } else {
+                    document.getElementById('image').classList.add('hidden');
+                }
+                document.getElementById('feedback').textContent = '';
+                document.getElementById('explanation').classList.add('hidden');
+                document.getElementById('retry-btn').classList.add('hidden');
+            } else {
+                tampilkanHasil();
+            }
+        }
+
+        // Fungsi periksa jawaban
+        function periksaJawaban(jawabanPengguna, btn) {
+            if (jawabanDipilih) return; // Cegah klik ganda
+            jawabanDipilih = true;
+            const benar = dataQuiz[pertanyaanSaatIni].jawabanBenar;
+            const pertanyaan = dataQuiz[pertanyaanSaatIni];
+            const optionsDiv = document.getElementById('options');
+            // Disable semua opsi
+            const buttons = optionsDiv.querySelectorAll('.option');
+            buttons.forEach(b => b.disabled = true);
+            
+            if (jawabanPengguna === benar) {
+                skor++;
+                document.getElementById('feedback').textContent = 'Jawaban benar!';
+                if (btn) btn.classList.add('correct');
+                // Animasi confetti
+                for (let i = 0; i < 20; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }
+                // Efek petasan (fireworks)
+                const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF'];
+                for (let i = 0; i < 25; i++) {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    firework.style.left = Math.random() * 100 + '%';
+                    firework.style.top = Math.random() * 50 + '%';
+                    firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    firework.style.animationDelay = Math.random() * 1 + 's';
+                    document.body.appendChild(firework);
+                    setTimeout(() => firework.remove(), 2000);
+                }
+                // Efek flash meriah
+                document.getElementById('quiz-container').classList.add('flash');
+                setTimeout(() => {
+                    document.getElementById('quiz-container').classList.remove('flash');
+                }, 1000);
+                // Efek wayang bertarung
+                const wayang1 = document.createElement('div');
+                wayang1.className = 'wayang-fight left';
+                wayang1.textContent = '👹';
+                document.body.appendChild(wayang1);
+                const wayang2 = document.createElement('div');
+                wayang2.className = 'wayang-fight right';
+                wayang2.textContent = '🦸';
+                document.body.appendChild(wayang2);
+                setTimeout(() => {
+                    wayang1.remove();
+                    wayang2.remove();
+                }, 2000);
+            } else {
+                document.getElementById('feedback').textContent = `Jawaban salah. Jawaban benar: ${benar}`;
+                if (btn) btn.classList.add('incorrect');
+                // Efek shake
+                document.getElementById('quiz-container').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('quiz-container').classList.remove('shake');
+                }, 500);
+                // Efek tanda silang
+                const cross = document.createElement('div');
+                cross.className = 'cross';
+                cross.textContent = '✗';
+                document.body.appendChild(cross);
+                setTimeout(() => cross.remove(), 1500);
+            }
+            
+            // Tambahkan tombol lanjut
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Lanjut';
+            nextBtn.className = 'btn';
+            nextBtn.onclick = () => {
+                pertanyaanSaatIni++;
+                nextBtn.remove();
+                tampilkanPertanyaan();
+            };
+            document.getElementById('feedback').appendChild(nextBtn);
+        }
+
+        // Fungsi tampilkan hasil
+        function tampilkanHasil() {
+            clearInterval(timerInterval); // Stop timer
+            document.getElementById('bg-music').pause(); // Stop musik
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const persentase = (skor / totalPertanyaan) * 100;
+            document.getElementById('score').textContent = `Skor Anda: ${skor}/${totalPertanyaan} (${persentase.toFixed(0)}%)`;
+            let message = '';
+            if (persentase >= 80) {
+                message = 'Luar biasa! Anda ahli wayang kulit.';
+            } else {
+                message = 'Belajar lagi yuk!';
+            }
+            document.getElementById('message').textContent = message;
+        }
+
+        // Fungsi rating
+        function rate(rating) {
+            let feedback = '';
+            if (rating === 1) {
+                feedback = 'Terima kasih! Senang quiz ini membuat Anda senyum. 😊';
+            } else if (rating === 2) {
+                feedback = 'Terima kasih atas feedbacknya. Kami akan berusaha lebih baik. 😐';
+            } else if (rating === 3) {
+                feedback = 'Maaf jika quiz ini membuat Anda sedih. Kami akan perbaiki. 😢';
+            }
+            alert(feedback);
+            document.getElementById('rating').style.display = 'none';
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</body>
+</html>
+
